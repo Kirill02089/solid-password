@@ -10,9 +10,13 @@ function createAppKey() {
         setKey(newKey)
     }
 
+    function resetKey() {
+        saveKey('')
+    }
+
     const hasKey = createMemo(() => Boolean(key()))
 
-    return { key, saveKey, hasKey }
+    return { key, saveKey, hasKey, resetKey }
 }
 
 export default createRoot(createAppKey)

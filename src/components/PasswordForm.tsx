@@ -1,9 +1,10 @@
 import { Component, createSignal, Show } from 'solid-js'
 import * as jose from 'jose'
 import appKey from '../store/appKey'
+import styles from './PasswordForm.module.css'
 
 export const PasswordForm: Component = () => {
-    const { key } = appKey
+    const { key, resetKey } = appKey
     const [password, setPassword] = createSignal('')
 
     async function submitForm(event: SubmitEvent) {
@@ -29,13 +30,20 @@ export const PasswordForm: Component = () => {
         const chunk = splited.at(2)
 
         if (!chunk) return
+        const pass = chunk.slice(0, 16)
+        console.log(pass)
 
-        setPassword(chunk.slice(0, 16))
+        setPassword(
+            `${pass.slice(0, 4)} ${pass.slice(4, 8)} ${pass.slice(
+                8,
+                12
+            )} ${pass.slice(12, 16)}`
+        )
     }
 
     return (
         <>
-            <div class="flex md:w-1/2 justify-center py-10 items-center bg-white">
+            <div class="py-10">
                 <form class="bg-white" onSubmit={submitForm}>
                     <div class="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
                         <svg
@@ -54,6 +62,7 @@ export const PasswordForm: Component = () => {
                             class="pl-2 outline-none border-none"
                             type="text"
                             name="sharedKey"
+                            autofocus
                             id=""
                             placeholder="Открытый ключ"
                         />
@@ -89,9 +98,13 @@ export const PasswordForm: Component = () => {
                     </button>
 
                     <Show when={password}>
-                        <h6>{password}</h6>
+                        <h2 class={styles.pass}>{password}</h2>
                     </Show>
                 </form>
+
+                <span class={styles.reset} onClick={resetKey}>
+                    Удалить ключ приложения
+                </span>
             </div>
         </>
     )
